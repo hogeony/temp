@@ -1,8 +1,9 @@
 # tensorflow-gpu 2.0.0b1 (gpu, CUDA 10)
+import time, os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0'  # or any {'0', '1', '2'}
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import *
 from tensorflow.keras import *
-import time
 
 class Model(Model):
     def __init__(self):
