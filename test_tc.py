@@ -25,8 +25,8 @@ class Model(nn.Module):
 
 batch_size = 100
 mnist_transform=torchvision.transforms.Compose([torchvision.transforms.ToTensor(),])
-data_train = torchvision.datasets.MNIST(root='./data', train=True, transform=mnist_transform)
-data_test = torchvision.datasets.MNIST(root='./data', train=False, transform=mnist_transform)
+data_train = torchvision.datasets.MNIST(root='./data', train=True, download= True, transform=mnist_transform)
+data_test = torchvision.datasets.MNIST(root='./data', train=False, download= True, transform=mnist_transform)
 dataloader_train = DataLoader(dataset=data_train,batch_size=batch_size,shuffle=True)
 dataloader_test = DataLoader(dataset=data_test,batch_size=batch_size)
 
@@ -38,7 +38,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), e
 
 time_start = time.time()
 for epoch in range(3):
-    for data, target in dataloader_train:
+    for idx, (data, target) in enumerate(dataloader_train):
         data, target = Variable(data).cuda(), Variable(target).cuda()
         optimizer.zero_grad()
         output = model(data)
@@ -47,7 +47,6 @@ for epoch in range(3):
         optimizer.step()
     print(epoch)
 time_end = time.time()
-
 print(time_end-time_start)
 # 30.35199952125549
 
