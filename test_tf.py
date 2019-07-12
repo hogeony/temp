@@ -33,15 +33,15 @@ time_start = time.time()
 c.fit(x_train, y_train, epochs=3, batch_size=100, shuffle=True)
 time_end = time.time()
 print(time_end-time_start)
-# 0.9968
-# 41.13810467720032
+# 0.9900
+# 15.218996286392212
 
 time_start = time.time()
 c.evaluate(x_test, y_test)
 time_end = time.time()
 print(time_end-time_start)
-# 0.9921
-# 0.7530009746551514
+# 0.9909
+# 0.7690010070800781
 
 c.layer.summary()
 # 3,274,634
