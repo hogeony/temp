@@ -5,7 +5,6 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from torch.autograd import Variable
 
-time_start = time.time()
 
 class Model(nn.Module):
     def __init__(self):
@@ -13,7 +12,7 @@ class Model(nn.Module):
         self.conv1 = nn.Conv2d(1, 32, 5, padding=2)
         self.conv2 = nn.Conv2d(32, 64, 5, padding=2)
         self.fc1 = nn.Linear(64 * 7 * 7, 1024)
-        self.fc2 = nn.Linear(1024, 1024)
+        self.fc2 = nn.Linear(1024, 10)
 
     def forward(self, x):
         x = F.max_pool2d(F.relu(self.conv1(x)), 2)
@@ -32,27 +31,29 @@ dataloader_train = DataLoader(dataset=data_train,batch_size=batch_size,shuffle=T
 dataloader_test = DataLoader(dataset=data_test,batch_size=batch_size)
 
 torch.cuda.set_device('cuda:0')
-
 model = Model()
 model.cuda()
 model.train()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), eps=1e-07, weight_decay=0)
+
+time_start = time.time()
 for epoch in range(3):
     for data, target in dataloader_train:
         data, target = Variable(data).cuda(), Variable(target).cuda()
         optimizer.zero_grad()
         output = model(data)
         loss = F.nll_loss(output, target)
-        loss.backward()    # calc gradients
-        optimizer.step()   # update gradients
+        loss.backward()
+        optimizer.step()
     print(epoch)
 time_end = time.time()
 
 print(time_end-time_start)
+# 30.35199952125549
 
-time_start = time.time()
 model.eval()
 correct = 0
+time_start = time.time()
 for data, target in dataloader_test:
     data, target = Variable(data.cuda()), Variable(target.cuda())
     output = model(data)
@@ -62,9 +63,8 @@ print('Test set: Accuracy: {:.2f}%'.format(100. * correct / len(dataloader_test.
 time_end = time.time()
 print(time_end-time_start)
 
-# 103.68564891815186
-# Test set: Accuracy: 99.30%
-# 1.0710148811340332
+# Test set: Accuracy: 99.10%
+# 1.0610148811340332
 
 pytorch_total_params = sum(p.numel() for p in model.parameters())
 print(pytorch_total_params)
